@@ -1303,9 +1303,11 @@ BUILD_WARNING_BAD_OPTIONAL_USES_LIBS_ALLOWLIST := LegacyCamera Gallery2
 dont_bother_goals := out product-graph
 
 ifneq ($(NEKO_BUILD),)
+ifneq ($(wildcard device/neko/sepolicy/common/sepolicy.mk),)
 ## We need to be sure the global selinux policies are included
 ## last, to avoid accidental resetting by device configs
 $(eval include device/neko/sepolicy/common/sepolicy.mk)
+endif
 endif
 
 # Make ANDROID Soong config variables visible to Android.mk files, for
