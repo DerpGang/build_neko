@@ -228,15 +228,26 @@ endif
 DATE := date -d @$(BUILD_DATETIME)
 .KATI_READONLY := DATE
 
+HAS_BUILD_NUMBER := true
+ifndef BUILD_NUMBER
+  # BUILD_NUMBER should be set to the source control value that
+  # represents the current state of the source code.  E.g., a
+  # perforce changelist number or a git hash.  Can be an arbitrary string
+  # (to allow for source control that uses something other than numbers),
+  # but must be a single word and a valid file name.
+  #
+  # If no BUILD_NUMBER is set, create a useful "I am an engineering build
+  # from this date/time" value.  Make it start with a non-digit so that
+  # anyone trying to parse it as an integer will probably get "0".
+  BUILD_NUMBER := $(BUILD_DATETIME)
+  HAS_BUILD_NUMBER := false
+endif
+.KATI_READONLY := HAS_BUILD_NUMBER
+
 # Everything should be using BUILD_DATETIME_FROM_FILE instead.
 # BUILD_DATETIME and DATE can be removed once BUILD_NUMBER moves
 # to soong_ui.
 $(KATI_obsolete_var BUILD_DATETIME,Use BUILD_DATETIME_FROM_FILE)
-
-ifndef HAS_BUILD_NUMBER
-  HAS_BUILD_NUMBER := false
-endif
-.KATI_READONLY := HAS_BUILD_NUMBER
 
 ifndef PLATFORM_MIN_SUPPORTED_TARGET_SDK_VERSION
   # Used to set minimum supported target sdk version. Apps targeting sdk
